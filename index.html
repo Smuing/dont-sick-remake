@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>아프지말고</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -34,7 +34,7 @@
         max-width: 440px;
         height: 100vh;
         margin: 0 auto;
-        overflow: hidden;
+        /* overflow: hidden; */
       }
       header {
         display: flex;
@@ -52,8 +52,8 @@
         height: 24px;
       }
       .main {
-        overflow-y: auto;
-        height: 100%;
+        /* overflow-y: auto;
+        height: 100%; */
         box-sizing: border-box;
         padding: 88px 16px 32px 16px;
         background-color: #f2f3f5;
@@ -131,6 +131,11 @@
         }
         .menu {
           width: 100%;
+        }
+      }
+      @media screen and (min-height: 777px) {
+        .main {
+          height: 100%;
         }
       }
     </style>
@@ -289,7 +294,7 @@
         button[i].addEventListener("click", () => {
           switch (button[i].dataset.value) {
             case "checkPaper":
-              window.location.href = "/checkPaper.html";
+              window.location.href = "dont-sick-remake/checkPaper.html";
               break;
 
             default:
