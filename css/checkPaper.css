@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+}
+p {
+  color: #5f6265;
+  font-family: "Noto Sans KR", sans-serif;
+  text-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+i {
+  font-size: 20px;
+  color: #5f6265;
+  cursor: pointer;
+}
+
+.wrapper {
+  max-width: 440px;
+  height: 100vh;
+  margin: 0 auto;
+  /* overflow: hidden; */
+}
+header {
+  display: flex;
+  align-items: center;
+  width: 440px;
+  height: 56px;
+  background-color: #ffffff;
+  padding: 16px;
+  position: fixed;
+  box-shadow: 0 3px 10px -7px rgb(0 0 0 / 10%);
+  z-index: 1;
+  box-sizing: border-box;
+}
+.logo {
+  height: 24px;
+}
+.main {
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 88px 16px 28px;
+  background-color: #f2f3f5;
+}
+.content {
+  border-radius: 24px;
+  padding: 24px 16px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 10px -3px rgb(0 0 0 / 25%);
+  margin-bottom: 24px;
+}
+.button {
+  position: relative;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  padding: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 10px -3px rgb(0 0 0 / 10%);
+  cursor: pointer;
+  transition: 0.3s;
+}
+.button:active {
+  background-color: #f6f6f6;
+}
+
+.new {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ef4452;
+}
+.button > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-content {
+  display: none;
+  margin-top: 14px;
+  font-weight: lighter;
+}
+
+.menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  background-color: rgb(0 0 0 / 30%);
+  width: 440px;
+  height: 100%;
+  padding: 88px 16px 28px;
+  box-sizing: border-box;
+}
+.post-btn {
+  background-color: #f6f6f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 3px 10px -3px rgb(0 0 0 / 10%);
+  cursor: pointer;
+}
+.delete {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ff6b77;
+  box-shadow: 0 3px 10px -3px rgb(255 107 119 / 50%);
+  margin: 16px 0 0;
+}
+.delete p {
+  color: #ffffff;
+}
+.delete i {
+  color: #ffffff;
+}
+
+@media screen and (max-width: 439px) {
+  header {
+    width: 100%;
+  }
+  .menu {
+    width: 100%;
+  }
+}
