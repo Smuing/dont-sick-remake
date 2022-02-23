@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>아프지말고</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/checkPaper.css" />
+    <link rel="stylesheet" href="input.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <i
+          class="fa-solid fa-angle-left"
+          style="margin-right: 16px"
+          onclick="window.history.back()"
+        ></i>
+        <p style="font-size: 20px; font-weight: bold">내 보건증</p>
+      </header>
+      <div class="main"></div>
+      <div class="menu"></div>
+    </div>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-analytics.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signInWithRedirect,
+        GoogleAuthProvider,
+        deleteUser,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-auth.js";
+      import {
+        doc,
+        collection,
+        setDoc,
+        getDocs,
+        getFirestore,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDugiSdAbhcAv4kjvZIczRILR0cWnyoLE4",
+        authDomain: "don-t-sick.firebaseapp.com",
+        databaseURL: "https://don-t-sick-default-rtdb.firebaseio.com",
+        projectId: "don-t-sick",
+        storageBucket: "don-t-sick.appspot.com",
+        messagingSenderId: "713607862724",
+        appId: "1:713607862724:web:da0a34ab7fb651d3662c91",
+        measurementId: "G-8MF7NEXJGV",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth();
+      const db = getFirestore();
+
+      let header = document.querySelector("header");
+      let menuDiv = document.querySelector(".menu");
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          let userEmail = user.email;
+          if (
+            user.email == "sdh20200405@sdh.hs.kr" ||
+            user.email == "shinem@sdh.hs.kr"
+          ) {
+            header.innerHTML += `<i class="fa-solid fa-plus" style="margin: 0 0 0 auto;" onclick="menu()"></i>`;
+            menuDiv.innerHTML += `<div class="content">
+                <label class="field field_v1" style="margin-bottom: 8px">
+                  <input class="field__input" name="email" type="email" placeholder="ex) sdh20200405@sdh.hs.kr" />
+                  <span class="field__label-wrap">
+                    <span class="field__label">학생 이메일</span>
+                  </span>
+                </label>
+                <label class="field field_v1" style="margin-bottom: 8px">
+                  <input class="field__input" name="time" placeholder="ex) 1교시" />
+                  <span class="field__label-wrap">
+                    <span class="field__label">시간</span>
+                  </span>
+                </label>
+                <label class="field field_v1" style="margin-bottom: 16px">
+                  <input class="field__input" name="symptom" placeholder="ex) 두통" />
+                  <span class="field__label-wrap">
+                    <span class="field__label">증상</span>
+                  </span>
+                </label>
+                <div class="post-btn">
+                  <p>보건증 작성</p>
+                  <i class="fa-solid fa-pen"></i>
+                </div>
+              </div>`;
+            document
+              .querySelector(".post-btn")
+              .addEventListener("click", () => {
+                let email = document.getElementsByName("email")[0];
+                let time = document.getElementsByName("time")[0];
+                let symptom = document.getElementsByName("symptom")[0];
+                if (
+                  email.value != "" &&
+                  time.value != "" &&
+                  symptom.value != ""
+                ) {
+                  post(email.value, time.value, symptom.value);
+                } else {
+                  alert("빈칸 없이 입력해주세요.");
+                }
+              });
+            userEmail = "check_paper";
+          }
+          const querySnapshot = await getDocs(collection(db, userEmail));
+          querySnapshot.forEach((doc) => {
+            // console.log(doc.id, " => ", doc.data());
+            newCheck(
+              doc.id,
+              doc.data().time,
+              doc.data().symptom,
+              userEmail,
+              doc.data().email,
+              doc.data().docName
+            );
+          });
+        } else {
+          window.location.href = "/index.html";
+        }
+      });
+
+      async function post(email, time, symptom) {
+        let newDate = dateFormat(new Date());
+        await setDoc(doc(db, email, newDate), {
+          time,
+          symptom,
+        });
+        await setDoc(doc(db, "check_paper", newDate + ` ${email}`), {
+          docName: newDate,
+          email,
+          time,
+          symptom,
+        });
+        window.location.reload();
+      }
+
+      function newCheck(title, time, symptom, admin, email, docName) {
+        let newBtn = document.createElement("div");
+        newBtn.classList.add("button");
+        newBtn.innerHTML += `
+          <div>
+            <p>${title}</p>
+            <i class="fa-solid fa-angle-down"></i>
+          </div>
+          <p class="text-content">
+            위 학생은 보건실에 ${time} ${symptom} 증상으로 다녀감을 확인합니다.<br /><br />
+            보건교사 문서현
+          </p>`;
+        if (admin == "check_paper") {
+          let deleteBtn = document.createElement("div");
+          deleteBtn.classList.add("button");
+          deleteBtn.classList.add("delete");
+          deleteBtn.addEventListener("click", async () => {
+            await deleteDoc(doc(db, "check_paper", title));
+            await deleteDoc(doc(db, email, docName));
+            window.location.reload();
+          });
+          newBtn.childNodes[3].appendChild(deleteBtn);
+          deleteBtn.innerHTML += `<p>삭제</p><i class="fa-solid fa-trash"></i>`;
+        }
+        newBtn.addEventListener("click", () => {
+          let icon = newBtn.childNodes[1].childNodes[3];
+          let text = newBtn.childNodes[3];
+          if (icon.classList.contains("fa-angle-down")) {
+            icon.classList.replace("fa-angle-down", "fa-angle-up");
+            text.style.display = "block";
+          } else {
+            icon.classList.replace("fa-angle-up", "fa-angle-down");
+            text.style.display = "none";
+          }
+        });
+        document.querySelector(".main").appendChild(newBtn);
+      }
+
+      function dateFormat(date) {
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        let second = date.getSeconds();
+
+        month = month >= 10 ? month : "0" + month;
+        day = day >= 10 ? day : "0" + day;
+        hour = hour >= 10 ? hour : "0" + hour;
+        minute = minute >= 10 ? minute : "0" + minute;
+        second = second >= 10 ? second : "0" + second;
+
+        return (
+          date.getFullYear() +
+          "." +
+          month +
+          "." +
+          day +
+          ". " +
+          hour +
+          ":" +
+          minute
+        );
+      }
+    </script>
+    <script>
+      function menu() {
+        let menuDiv = document.querySelector(".menu");
+        let icon = event.target;
+        if (icon.classList.contains("fa-plus")) {
+          icon.classList.replace("fa-plus", "fa-xmark");
+          menuDiv.style.display = "block";
+        } else {
+          icon.classList.replace("fa-xmark", "fa-plus");
+          menuDiv.style.display = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
