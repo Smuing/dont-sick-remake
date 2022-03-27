@@ -61,8 +61,8 @@
             <p>오늘의 일정은 <span style="font-weight: bold">준비중</span></p>
             <i class="fa-solid fa-angle-right"></i>
           </div>
-          <div class="button" style="margin-bottom: 16px">
-            <p>이번달 급식표</p>
+          <div class="button" style="margin-bottom: 16px" data-value="lunchMenu">
+            <p>이달의 급식</p>
             <i class="fa-solid fa-angle-right"></i>
           </div>
           <div class="button">
@@ -204,7 +204,8 @@
             case "checkPaper":
               window.location.href = "./checkPaper.html";
               break;
-
+            case "lunchMenu":
+              window.location.href = "./lunchMenu.html";
             default:
               break;
           }

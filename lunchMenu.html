@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/checkPaper.css" />
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <i class="fa-solid fa-angle-left" style="margin-right: 16px" onclick="window.history.back()"></i>
+            <p style="font-size: 20px; font-weight: bold">이달의 급식</p>
+        </header>
+        <div class="main"></div>
+
+        <script>
+            const apiKey = "e330c0fb869e46cea1eb7e58d0b7c7f0"
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = today.getMonth() + 1 >= 10 ? today.getMonth() + 1 : `0${today.getMonth() + 1}`;
+            fetch(`https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${apiKey}&Type=JSON&ATPT_OFCDC_SC_CODE=B10&SD_SCHUL_CODE=7010572&MLSV_FROM_YMD=${year}${month}01&MLSV_TO_YMD=${year}${month}31`)
+                .then((response) => {
+                    response.json().then((data) => {
+                        console.log(data.mealServiceDietInfo[1].row);
+                        data.mealServiceDietInfo[1].row.map((doc) => {
+                            let year = doc.MLSV_YMD.substr(0, 4)
+                            let month = doc.MLSV_YMD.substr(4, 2)
+                            let day = doc.MLSV_YMD.substr(6, 2)
+                            newButton([year,month,day].join('.'), doc.DDISH_NM)
+                        })
+
+                    })
+                })
+
+            function newButton(day, menu) {
+                let newBtn = document.createElement("div");
+                newBtn.classList.add("button");
+                newBtn.innerHTML += `
+                    <div>
+                      <p>${day}</p>
+                      <i class="fa-solid fa-angle-down"></i>
+                    </div>
+                    <p class="text-content">
+                      ${menu}
+                    </p>`;
+                newBtn.addEventListener("click", () => {
+                    let icon = newBtn.childNodes[1].childNodes[3];
+                    let text = newBtn.childNodes[3];
+                    if (icon.classList.contains("fa-angle-down")) {
+                        icon.classList.replace("fa-angle-down", "fa-angle-up");
+                        text.style.display = "block";
+                    } else {
+                        icon.classList.replace("fa-angle-up", "fa-angle-down");
+                        text.style.display = "none";
+                    }
+                });
+                document.querySelector(".main").appendChild(newBtn);
+            }
+        </script>
+</body>
+</html>

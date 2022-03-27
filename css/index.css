@@ -5,6 +5,7 @@ p {
   color: #5f6265;
   font-family: "Noto Sans KR", sans-serif;
   text-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+  user-select: none;
 }
 i {
   font-size: 20px;
@@ -31,6 +32,7 @@ header {
 }
 .logo {
   height: 24px;
+  user-select: none;
 }
 .main {
   box-sizing: border-box;
