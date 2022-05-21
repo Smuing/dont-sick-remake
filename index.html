@@ -26,7 +26,6 @@
           onclick="menu()"
         ></i>
         <img class="logo" src="./logo.png" alt="logo" />
-        <i class="fa-regular fa-bell" style="margin: 0 0 0 auto"></i>
       </header>
       <div class="main">
         <div class="content">
@@ -57,15 +56,15 @@
           <p style="color: #474a4e; font-size: 18px; margin-bottom: 16px">
             디지텍 소식통
           </p>
-          <div class="button" style="margin-bottom: 16px">
-            <p>오늘의 일정은 <span style="font-weight: bold">준비중</span></p>
+          <div class="button" style="margin-bottom: 16px" data-value="event">
+            <p>오늘의 일정은 <span id="event" style="font-weight: bold">준비중</span></p>
             <i class="fa-solid fa-angle-right"></i>
           </div>
           <div class="button" style="margin-bottom: 16px" data-value="lunchMenu">
             <p>이달의 급식</p>
             <i class="fa-solid fa-angle-right"></i>
           </div>
-          <div class="button">
+          <div class="button" data-value="notice">
             <p>디지텍통신문</p>
             <i class="fa-solid fa-angle-right"></i>
           </div>
@@ -204,13 +203,45 @@
             case "checkPaper":
               window.location.href = "./checkPaper.html";
               break;
+            case "event":
+              window.location.href = "./event.html";
+              break;
             case "lunchMenu":
               window.location.href = "./lunchMenu.html";
+              break;
+            case "notice":
+              window.location.href = "https://sdh.sen.hs.kr/78399/subMenu.do";
+              break;
             default:
               break;
           }
         });
       }
+    </script>
+    <script>
+      const apiKey = "e330c0fb869e46cea1eb7e58d0b7c7f0"
+      let today = new Date();
+      let year = today.getFullYear();
+      let month = today.getMonth() + 1 >= 10 ? today.getMonth() + 1 : `0${today.getMonth() + 1}`;
+      let date = today.getDate();
+      let eventTag = document.getElementById("event");
+      fetch(`https://open.neis.go.kr/hub/SchoolSchedule?KEY=${apiKey}&Type=JSON&ATPT_OFCDC_SC_CODE=B10&SD_SCHUL_CODE=7010572&AA_YMD=${year}${month}${date}`)
+                .then((response) => {
+                    response.json().then((data) => {
+                        console.log(data);
+                        
+                        if (data.SchoolSchedule[1].row[0].EVENT_NM == "토요휴업일"||data.RESULT.CODE == "INFO-200") {
+                          eventTag.textContent = "없음"
+                        } else if (data.SchoolSchedule[1].row.length > 1) {
+                          eventTag.innerHTML = ""
+                          data.SchoolSchedule[1].row.map(doc=>{
+                            eventTag.innerHTML += `<br/>${doc.EVENT_NM}`
+                          })
+                        } else if (data.SchoolSchedule[1].row.length == 1) {
+                          eventTag.textContent = data.SchoolSchedule[1].row[0].EVENT_NM
+                        } 
+                    })
+                })
     </script>
   </body>
 </html>
