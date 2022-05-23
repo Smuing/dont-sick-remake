@@ -229,17 +229,20 @@
                 .then((response) => {
                     response.json().then((data) => {
                         console.log(data);
-                        
-                        if (data.SchoolSchedule[1].row[0].EVENT_NM == "토요휴업일"||data.RESULT.CODE == "INFO-200") {
+                        if(data.RESULT.CODE == "INFO-200") {
                           eventTag.textContent = "없음"
-                        } else if (data.SchoolSchedule[1].row.length > 1) {
-                          eventTag.innerHTML = ""
-                          data.SchoolSchedule[1].row.map(doc=>{
-                            eventTag.innerHTML += `<br/>${doc.EVENT_NM}`
-                          })
-                        } else if (data.SchoolSchedule[1].row.length == 1) {
-                          eventTag.textContent = data.SchoolSchedule[1].row[0].EVENT_NM
-                        } 
+                        } else {
+                          if (data.SchoolSchedule[1].row[0].EVENT_NM == "토요휴업일") {
+                            eventTag.textContent = "없음"
+                          } else if (data.SchoolSchedule[1].row.length > 1) {
+                            eventTag.innerHTML = ""
+                            data.SchoolSchedule[1].row.map(doc=>{
+                              eventTag.innerHTML += `<br/>${doc.EVENT_NM}`
+                            })
+                          } else if (data.SchoolSchedule[1].row.length == 1) {
+                            eventTag.textContent = data.SchoolSchedule[1].row[0].EVENT_NM
+                          } 
+                        }
                     })
                 })
     </script>
